@@ -1,0 +1,75 @@
+---
+title: "SOC 533 Leslie Matrix Assignment"
+author: "Daphne Liu"
+date: "January 31, 2017"
+output: html_document
+---
+
+Produce a Leslie Matrix for the cohort of Swedish women born in 1900, with a 5-year age interval and 5-year projection step. The data are available in the Human Mortality Database and Human Fertility Database. 
+
+```{r setup}
+setwd("~/Documents/Graduate School/Year 1/SOC 533")
+
+# Import 5x5 life tables
+c.tables <- read.table("fltcoh_5x5.txt", skip=2, header=TRUE)
+# Import cohort birth counts
+c.births <- read.table("SWEbirthsVH.txt", skip=2, header=TRUE)
+# Import cohort exposure count (total number of females)
+c.exposure <- read.table("SWEexposVH.txt", skip=2, header=TRUE)
+
+# We are only interested in the cohort of Swedish women born in 1900
+tables <- c.tables[c.tables$Year=="1900-1904",]
+births <- c.births[c.births$Cohort==1900,]
+exposure <- c.exposure[c.exposure$Cohort==1900,]
+
+# Convert factors to numeric
+births[,3] <- as.numeric(as.character(births[,3]))
+exposure[,3] <- as.numeric(as.character(exposure[,3]))
+
+# Set up Leslie matrix: there are 24 different 5-year age intervals so our matrix will be 24x24
+leslie <- matrix(rep(0, 24), nrow=24, ncol=24)
+rownames(leslie) <- tables$Age
+colnames(leslie) <- tables$Age
+```
+
+
+```{r fertility}
+# First row of Leslie matrix
+
+# Compute age-specific fertility rates: we take sum(number of births=birth counts) and divide by sum(total number of people SWEexposVH.txt = nLx) over the 5 year period for each of the 24 age groups
+age.fert <- rep(0, 24)
+names(age.fert) <- tables$Age
+# First 3 elements are 0
+age.fert[4] <- sum(births[1:3, 3])/sum(exposure[1:3, 3]) # ages 12-14
+# Age groups 15-19 to 50-54 (elements 5-13)
+j <- 4
+for(i in 5:12){
+  age.fert[i] <- sum(births[j:(j+4), 3])/sum(exposure[j:(j+4), 3])
+  j <- j+5
+}
+# Age groups 55-59 to 110+ (elements 14-24) 
+# We only have birth/exposure data for group 55+ so all are based on the same row in birth/exposure datasets
+for(i in 13:24){
+  age.fert[i] <- sum(births[44, 3])/sum(exposure[44, 3])
+}
+
+# Compute Leslie matrix entries using age-specific fertility found above and elements from the life table
+l0 <- tables[1, "lx"]
+for(i in 1:23){
+  leslie[1, i] <- (tables[1, "Lx"]/(2*l0))*(age.fert[i] + age.fert[i+1]*(tables[i+1, "Lx"]/tables[i, "Lx"]))
+}
+leslie[1, 24] <- 0 # Last element
+```
+
+```{r survival}
+# Off diagonals
+for(i in 1:23){
+  leslie[i+1, i] <- tables[i+1, "Lx"]/tables[i, "Lx"]
+}
+```
+
+```{r output}
+# Output leslie as a .csv file
+write.csv(leslie, file="dhliu_leslie.csv")
+```
+
