@@ -6,6 +6,7 @@
 ## Set-up
 # Attach packages/data, set_wd etc. 
 library(dplyr)
+#setwd(my-random-top-level/ SOC533-Winter2017/MikeEsposito")
 setwd("C:/Users/Mike/Dropbox/DemoMethods/HW5/SOC533-Winter2017/MikeEsposito")
 
 # Cohort life table
@@ -85,5 +86,8 @@ for (j in 1:ncol(A) - 1){
 			  0.4886
 }
 
-# Take a look
+# Take a look and save as a .csv
 A %>% round(4)
+
+write.csv(A, 'MikesMatrix.csv')
+
