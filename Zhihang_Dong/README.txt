@@ -1,3 +1,8 @@
+---
+author: Zhihang Dong
+date: 2/11/17
+class: Csde 533
+---
 This is a way to produce the Leslie matrix for Homework 5 using the data from the Human Mortality Database (HMD)
 and Human Fertility Database (HFD).
 
