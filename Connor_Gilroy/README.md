@@ -27,7 +27,7 @@ this means taking an average of rates for the 5-year interval.
 The size of the matrix is the number of age bins available, from 0-4 up to 110+.
 Filling in all empty values as 0s initially simplifies calculations. The off-diagonal
 is simply the ratio Lx+n/Lx. The values of the first row are
-L0/(2l0) * (Lx*Fx + Lx+n*Fx+n) / Lx * f_fab. (For fraction female at birth, I use
+L0/(2l0) * (Lx * Fx + Lx+n * Fx+n) / Lx * f_fab. (For fraction female at birth, I use
 the default 0.4886.)
 
 Note that the decision to take a five-year average for fertility rates produces a
@@ -37,7 +37,7 @@ the fertility rate for 14-year-olds is nonzero.)
 I write the constructed matrix to a csv file, `sweden_leslie_matrix_5x5.csv`. I
 use the base `write.csv()` function rather than `readr::write_csv()` because
 the latter is optimized for data frames and does not handle row names for
-matrices well. 
+matrices well.
 
 Finally, I note that if you open the csv file contain the matrix in Excel, two of
 the age bins will display as dates. This is because Excel is antithetical to science
