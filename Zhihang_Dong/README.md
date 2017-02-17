@@ -6,6 +6,8 @@ class: Csde 533
 This is a way to produce the Leslie matrix for Homework 5 using the data from the Human Mortality Database (HMD)
 and Human Fertility Database (HFD).
 
+# Prepare the Data
+
 You first download the data from HFD the cohort-level fertility data for Sweden from the website below:
 http://www.humanfertility.org/cgi-bin/country.php?country=SWE&tab=asfr
 
