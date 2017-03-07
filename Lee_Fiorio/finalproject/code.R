@@ -14,39 +14,41 @@ mode <- function(x) {
   ux[which.max(tabulate(match(x, ux)))]
 }
 
-
+#function for simulating Twitter-type spatial-temporal data
+#each row represents an person and each column represents a time
+#the value of each cell is the person's location at a particular time
 make.world <- function(home, away, permanent.stay){
   
   world <- NULL
-  
-  for (j in 1:1000){
+  for (j in 1:1000){ #number of 'persons' in the simulated 'world'
     
-    
-    location <- c(1,0) #two location options for each draw at time t
-    
+    #initializing person-level variables
+    location <- c(1,0) #two location options; 'home' location designated by first element
     away.ct <- 0 #count of the number of times a person is away
-    
     person <- sample(location, 1, prob = c(home, 1-home)) #initial location
     
-    for (i in 1:500){
+    for (i in 1:500){ #number of times we observe the location of each 'person'
       
       if (tail(person,1) == location[1]) { #if person was 'home' at t-1
         
-        person <- c(person, sample(location, 1, prob = c(home, 1-home)))
-        
-        away.ct <- 0} 
+        person <- c(person, sample(location, 1, prob = c(home, 1-home))) #draw for their location at t
+        away.ct <- 0} #set away.ct to zero
       
       else { 
         
-        away.ct <- away.ct + 1  #away count goes up
+        away.ct <- away.ct + 1  #away count goes up 
         
         if (away.ct == permanent.stay){ #if person has been 'away' a certain number of times
           
-          location <- rev(location) #'away' becomes 'home' (i.e. sampling location is reversed)
-          person <- c(person, sample(location, 1, prob = c(home, 1-home)))
-          away.ct <- 0}
+          location <- rev(location) #'away' becomes 'home' (i.e. preferered location is reversed)
+          person <- c(person, sample(location, 1, prob = c(home, 1-home))) #draw for their location at t
+          away.ct <- 0} #set away count back to zero
         
-        else { person <- c(person, sample(rev(location), 1, prob = c(away, 1-away)))}
+        else { #if person was 'away' at time t hasn't triggered the permanent.stay switch
+          
+          person <- c(person, sample(rev(location), 1, prob = c(away, 1-away))) #draw for their location at time t
+          
+        }
       }
     }
     world <- rbind(world, person, deparse.level = 0)
@@ -54,16 +56,25 @@ make.world <- function(home, away, permanent.stay){
   return(world)
 }
 
+#function for determining whether persons in the simulated 
+#world have migrated given various definitions of migration (interval and duration)
 make.mig.mat <- function(world){
-  mig.mat <- NULL
   
-  for(n in 1:nrow(world)){
-    mig.est <- NULL
-    dur <- NULL
-    int <- NULL
+  mig.mat <- NULL #the object that will be returned
+  
+  for(n in 1:nrow(world)){ #loop through each 'person'
+    
+    mig.est <- NULL #vector of estimates specific to each person
+    dur <- NULL #for labeling 
+    int <- NULL #for labeling
+    
     for (interval in seq(4,104,4)){
+      
       for(duration in seq(4,interval,4)){
+        
+        #one or zero depending on whether location at begining of interval matches location at end of interval
         mig.est <- c(mig.est,(mode(world[n,1:duration]) == mode(world[n,(2+interval):(2+interval+duration)]))*1)
+        
         dur <- c(dur,duration)
         int <- c(int,interval)
       }
@@ -73,7 +84,7 @@ make.mig.mat <- function(world){
   return(rbind(int,dur,mig.mat))
 } 
 
-
+#function for plotting migration contours
 make.contour.dur_by_int <- function(mig.mat){
   
   plot.new()
