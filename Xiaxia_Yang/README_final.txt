@@ -1,3 +1,7 @@
-My data comes from the UN population division and the World Health Organization.
-The calculation steps and the resulting line plots are showed in the presentation.pptx file. The calculation procedures are showed in the Worksheets.xlsx file.
-The sense of computing dependency ratio with stable age pyramids it that compared with observed ratios, the ratios calculated in the context of stable population get rid of the effect of migration and prior history. It is sort of the intrinsic character of the pop.
+Final Project-Dependency ratio of China
+Xiaxia Yang
+
+  My original data comes from the UN population division and the World Health Organization.
+  The calculation steps and the resulting line charts are showed in the Presentation_final.pptx file. The calculation procedures and periodical results are showed in the Worksheets_final.xlsx file.
+  The first line chart in the .pptx file is based on actual observed data. We can see that China's dependency ratio used to have similiar quantity and follow the same trend as other less developed countries from the 1950s until the 1970s. However starting from the 1980s, its dependency ratio begins to approximate that of the more developed countries. We can guess that part of the reason is the implement of the one-child policy which significantly restricts new births. 
+  The second line chart in the .pptx file is based on adjusted data with stable age pyramids using Lotka's R. The sense of computing dependency ratio with stable age pyramids is that when compared with observed ratios, the ratios calculated in the context of stable population get rid of the effect of migration and prior history. Therefore it shows the intrinsic character of the population. From the chart we can see that from 2000 to 2015, the change of child dependency ratio of China is negligible, while the elderly dependency ratio is on the rise, leading to the increase of the total dependency ration. It could be seen that while the new births are severely controlled, the proportion of the elderly is growing. Thus the population aging issue comes into being in recent years. 
