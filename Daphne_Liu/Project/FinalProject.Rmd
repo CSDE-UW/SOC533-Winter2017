@@ -1,0 +1,172 @@
+---
+title: "SOC 533 Project"
+author: "Daphne Liu"
+date: "March 4, 2017"
+output: html_document
+---
+### SOC 533 Final Project: Calculating Period Fertility Measures
+
+We have created functions that compute various period fertility measures. To use these functions, we can take period ASFR (i.e. nFx) data from the Human Fertility Database (age-specific period fertlity rates) to compute these period fertility measures. For the purposes of this demonstration/assignment, we will be using example data provided in our textbook (Essential Demographic Methods) so that we have a means of checking if our functions calculate these measures correctly. 
+
+##### Period NRR
+```{r NRR, echo=FALSE}
+# nFx and nLx are vectors of the same length
+# ffab is 0.4886 by default
+periodNRR <-function(nFx, nLx, l0, ffab){
+  if(missing(ffab)) {
+    ffab=0.4886
+    }
+  NRR <- sum(nFx*nLx*ffab*(1/l0))
+  return(NRR)
+}
+
+
+###### Examples
+# From Essential Demographic Methods Table 6.1, we calculate age-specific measures for India, 2000
+India.nFx <- c(0.050, 0.218, 0.180, 0.100, 0.051, 0.023, 0.008)
+India.nLx <- c(4442, 4398, 4341, 4281, 4219, 4151, 4069)
+India.l0 <- 1000
+periodNRR(India.nFx, India.nLx, India.l0)
+
+```
+
+##### Period TFR
+```{r TFR, echo=FALSE}
+# nFx and n are vectors of the same length
+periodTFR <- function(nFx, n){
+  TFR <- sum(nFx*n)
+  return(TFR)
+}
+
+
+###### Examples
+# From Essential Demographic Methods Table 6.1, we calculate age-specific measures for India, 2000
+# Here, every age group is 5 years wide
+periodTFR(India.nFx, rep(5,7))
+```
+
+##### Period GRR
+```{r GRR, echo=FALSE}
+# nFx and n are vectors of the same length
+# ffab is 0.4886 by default
+periodGRR <- function(nFx, n, ffab){
+  if(missing(ffab)){
+    ffab=0.4886
+  }
+  GRR <- sum(nFx*n*ffab)
+  return(GRR)
+}
+
+
+###### Examples
+# From Essential Demographic Methods Table 6.1, we calculate age-specific measures for India, 2000
+# Here, every age group is 5 years wide
+periodGRR(India.nFx, rep(5,7))
+```
+
+##### Age-Standardized Birth Rates
+```{r ASBR, echo=FALSE}
+# nKx is the standard nKx given in table 6.3 of Essential Demographic Methods unless otherwise specified
+# Age vector x is the default given in table 6.3 of Essential Demographic Methods unless otherwise specified
+# If x is different from the default value, nKx must be specified in order for function to work correctly
+ASR.birth <- function(nFx, x, nKx){
+  if(!missing(x) & missing(nKx)){
+    return("Error: missing nKx argument")
+  }
+  if(missing(x) & missing(nKx)){
+    x <- c(0, 15, 20, 25, 30, 35, 40, 45, 50)
+    nKx <- c(882, 270, 248, 245, 232, 209, 182, 164, 574)
+  }
+  babies <- nKx*nFx
+  pop.size <- 6057 # From Essential Demographic Methods page 136
+  ASBR <- sum(babies)/pop.size
+  return(ASBR)
+}
+
+
+###### Examples
+# From Essential Demographic Methods Table 6.3: age standardized birth rate for France
+France.nFx <- c(0, 0.008, 0.056, 0.134, 0.118, 0.050, 0.012, 0.000, 0)
+ASR.birth(France.nFx)
+```
+
+##### Princeton Indices
+```{r princeton, echo=FALSE}
+# Age vector x is c(15, 20, 25, 30, 35, 40, 45)
+# Age vector and Hutterite rates are from table 6.4 in Essential Demographic Methods
+# Arguments taken are fiveKx (counts of women),fiveKx.married (counts of married women) B.overall (total births to all women observed in the actual population), B.marital (total births to married women in the actual population)
+# Returns vector p.indices that includes If (index of overall fertility), Ig (index of marital fertility), Ih (index of non-marital fertility), and Im (Princeton Index of Marriage: measures how conducive the marriage pattern is to high fertility)
+princeton <- function(fiveKx, fiveKx.married, B.overall, B.marital){
+  hutterite <- c(0.300, 0.550, 0.502, 0.407, 0.406, 0.222, 0.061)
+  If <- B.overall/sum(fiveKx*hutterite)
+  Ig <- B.marital/sum(fiveKx.married*hutterite)
+  Im <- sum(fiveKx.married*hutterite)/sum(fiveKx*hutterite)
+  Ih <- (If - (Ig*Im))/(1-Im)
+  p.indices <- c(If, Ig, Ih, Im)
+  names(p.indices) <- c("If", "Ig", "Ih", "Im")
+  return(p.indices)
+}
+
+
+###### Examples
+# From Essential Demographic Methods Table 6.4 for women in Berlin in 1900
+ex.B.overall <- 49538
+ex.B.marital <- 42186
+overall.nKx <- c(91358, 114464, 99644, 88886, 75729, 66448, 54485)
+marital.nKx <- c(1538, 28710, 55417, 62076, 55293, 47197, 36906)
+princeton(overall.nKx, marital.nKx, ex.B.overall, ex.B.marital)
+```
+
+##### Coale & Trussell's M and m
+```{r coaletrussell, echo=FALSE}
+# Coale-Trussell spine constants are from Table 6.5 in Essential Demographic Methods
+# Coale-Trussell model: marital.5Fx = M*n[x]*e^(-m*nu[x])
+# M sets a background level of natural fertility 
+# m sets the strength of parity-specific fertility information
+# n[x] is an assumed schedule for age-specific martial fertility under conditions of natural fertility
+# nu[x] is an assumed set of weights for the impact of fertility limitation on the rates for age x
+# Argument is ASMFR = age-specific marital fertility rates
+ct.estimates <- function(ASMFR){
+  if(is.na(ASMFR[length(ASMFR)])){
+    x <- c(15, 20, 25, 30, 35, 40)
+    n <- c(0.360, 0.460, 0.431, 0.396, 0.321, 0.167)
+    nu <- c(0.000, 0.000, 0.279, 0.667, 1.042, 1.414)
+    ASMFR <- ASMFR[-length(ASMFR)]
+  }else{
+    x <- c(15, 20, 25, 30, 35, 40, 45)
+    n <- c(0.360, 0.460, 0.431, 0.396, 0.321, 0.167, 0.024)
+    nu <- c(0.000, 0.000, 0.279, 0.667, 1.042, 1.414, 1.670)
+  }
+  Y <- log(ASMFR/n)
+  XX <- nu*nu
+  XY <- nu*Y
+  m <- -(mean(XY)-mean(nu)*mean(Y))/(mean(XX)-mean(nu)*mean(nu))
+  M <- exp(mean(Y) + m*mean(nu))
+  estimates <- c(m, M)
+  names(estimates) <- c("m", "M")
+  return(estimates)
+}
+
+# ct.predictions returns a vector marital.5Fx of predicted age-specific marital fertility rates using the Coale-Trussell model
+ct.predictions <- function(m, M){
+  x <- c(15, 20, 25, 30, 35, 40, 45)
+  n <- c(0.360, 0.460, 0.431, 0.396, 0.321, 0.167, 0.024)
+  nu <- c(0.000, 0.000, 0.279, 0.667, 1.042, 1.414, 1.670)
+  marital.5Fx <- M*n*exp(-m*nu)
+  names(marital.5Fx) <- c("x=15", "x=20", "x=25", "x=30", "x=35", "x=40", "x=45")
+  return(marital.5Fx)
+}
+
+
+###### Examples
+# From Essential Demographic Methods: if m=1.03, M=0.79 we should get marital.5F30 = 0.157
+ct.predictions(1.03, 0.79)["x=30"]
+# From Essential Demographic Methods: M & m for Bangladesh 2007 (Table 6.6)
+# We should find m=1.199, M=0.455 (rounding error here)
+Bangladesh.ASMFR <- c(0.1982, 0.1814, 0.1396, 0.0734, 0.0430, 0.0144, NA)
+ct.estimates(Bangladesh.ASMFR)
+```
+
+
+
+
