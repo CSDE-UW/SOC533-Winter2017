@@ -1,6 +1,8 @@
 # files
 lecture_notes.txt
 GitHub_Tutorial.Rmd 
+../alt/
 
 # Mac files
 *.DS_Store
+.Rproj.user
