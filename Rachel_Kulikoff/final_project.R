@@ -254,7 +254,7 @@ gdata <- rbind(lt_full, nonshock_lt)
 # child_noshock[,sex_id := NULL]
 # 
 
-pdf("C:/Users/xrkulik/Documents/Classes and Trainings/SOC Research Methods in Demography/lifetable_graphs.pdf",width=15,height=10) 
+pdf("C:/Users/xrkulik/Documents/Classes and Trainings/SOC Research Methods in Demography/SOC533-Winter2017/Rachel_Kulikoff/lifetable_graphs.pdf",width=15,height=10) 
   for(sexes in c("male", "female", "both")){
     temp <- gdata[sex==sexes]
       p= ggplot() + geom_line(data=temp, aes(x=year_id, y=ex, color=type)) + 
