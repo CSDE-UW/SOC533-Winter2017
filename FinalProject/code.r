@@ -26,13 +26,17 @@ setwd("C:/Users/Mike/Dropbox/SOC 533 Final Project")
 #						 zipped = T)
 
 ## E.g., for NHIS  2011
-nhis11_instructions <- "ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Program_Code/NHIS/2011/personsx.sas"
-nhis11_personx 		<- "ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/NHIS/2011/personsx.zip"##
+NHIS.11.personsx.SAS.read.in.instructions <-
+"ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Program_Code/NHIS/2011/personsx.sas"
+NHIS.11.personsx.file.location <-
+"ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/NHIS/2011/personsx.zip"
+#store the NHIS file as an R data frame
+NHIS.11.personsx.df <-
+read.SAScii (
+NHIS.11.personsx.file.location ,
+NHIS.11.personsx.SAS.read.in.instructions ,
+zipped = T)
 
-## store the NHIS file as an R data frame
-NHIS.11.personsx.df <- read.SAScii (nhis11_instructions, 
-									nhis11_personx, 
-									zipped = T)
 
 # Saved 2011 dataframe for demo
 # saveRDS(NHIS.11.personsx.df, 'nhis11.rds')
@@ -48,6 +52,7 @@ lt = read.table('lifetable.txt',
 			     header = TRUE,
 			     stringsAsFactors = FALSE) 
 
+## 3: Function for quickly (re-)calculating HLE 
 # Function for HLE from NHIS and HMD Data
 hle.fun <- function(nhis.dat, 
 					lt.dat, 
@@ -104,7 +109,7 @@ hle.fun <- function(nhis.dat,
 	HLE = rep(NA, nrow(dat))
 
 	for(i in 1:nrow(dat)){
- 		HLE[i]<-(1/dat$lx[i])*sum(dat$healthy[i]*dat$Lx[i:nrow(dat)])
+ 		HLE[i] <- (1/dat$lx[i])*sum(dat$healthy[i]*dat$Lx[i:nrow(dat)])
 	}
 
 	fin = cbind(dat$Age2, dat$ex, HLE) %>%
@@ -120,6 +125,8 @@ hle.fun <- function(nhis.dat,
 	return(fin2)
 }
 
+## 4: Some illustratations 
+# just for making the labels look a little beter
 lab = c(paste(0, 4, sep = '-'),
 		paste(
 	      seq(5, 85 -5, by = 5),
@@ -153,4 +160,13 @@ test3 = hle.fun(readRDS('nhis11.rds'),
 			   sex = 2, 
 			   health.var = 'PHSTAT', 
 			   healthy.status = c(1,2,3),
+			   labs = lab)
+
+# Look at functional limitation status
+test4 = hle.fun(readRDS('nhis11.rds'), 
+			   lt.dat = lt,
+			   year = 2011,
+			   sex = 2, 
+			   health.var = 'LACHRONR', 
+			   healthy.status = c(0),
 			   labs = lab)
