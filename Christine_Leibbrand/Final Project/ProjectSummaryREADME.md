@@ -1,0 +1,26 @@
+Christine Leibbrand
+
+3/7/2017
+Demographic Research Methods SOC 533
+
+Final Project Synopsis
+
+***********************************************************
+
+The main aim of my Demographic Methods project is to create a function that creates a period lifetable from a few basic inputs, in this case, age, mortality rates, and year, since my function can handle longitudinal data.
+
+In the code provided, I read in Human Mortality Database (HMD) data to illustrate how my function can be used with real-world data.
+
+Reading in HMD data also allows me to compare the results from my function with the lifetables HMD calculates, thereby indicating whether my calculations make sense and are reasonable.
+
+The reason I wanted to create this function is that researchers frequently have only a few pieces of information about mortality or have limited time and do not wish to calculate a wide host of inputs.
+
+By only using age, year, and mortality rates in my function, I therefore reduce the burden of collecting and calculating multiple indicators of mortality.
+
+
+
+To use my function, researchers need to supply the function with numeric vectors for age, year, and mortality rates to the lifetable function "lt," as illustrated in the example provided in the code.
+
+It should be noted that this function is easily modifiable if data is cross-sectional and if a "year" term is therefore not available by taking out the year loop functions and removing the "year" parameter from the function.
+Additionally, the lifetable function creates a period lifetable, and therefore period data is most appropriate for this function.
+The function does produce warnings, but those can be ignored as they do not actually affect the functioning or output of the lifetable.
