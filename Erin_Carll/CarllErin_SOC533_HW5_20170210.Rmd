@@ -1,0 +1,60 @@
+---
+title: "Homework #5"
+subtitle: | 
+  | SOC 533: Demographic Methods 
+author: |
+  | Erin Carll
+  | (collaborated with Christine Leibbrand)
+date: '`r Sys.Date()`'
+output: pdf_document
+---
+
+```{r, echo=TRUE, message=FALSE, collapse=TRUE, tidy=TRUE,tidy.opts=list(width.cutoff=50),fig.show="hide", warning=FALSE, message=FALSE}
+setwd("/Users/Erin/Dropbox")
+library(data.table)
+# 1. Download and read in data files: http://www.mortality.org/hmd/SWE/STATS/fltcoh_5x5.txt, http://www.humanfertility.org/cgi-bin/getfile.plx?f=SWE\20160321\SWEasfrRR.txt
+mortality<- read.table("SOC533/HW5_data_documentation/lifetable_5x5_HW5.txt", header=T)
+fertility<-read.table("SOC533/HW5_data_documentation/SWEasfrRR.txt", header=T)
+#mortality<- read.table("C:/Users/Robski/Dropbox/SOC533/HW5_data_documentation/lifetable_5x5_HW5.txt", header=T)
+#fertility<-read.table("C:/Users/Robski/Dropbox/SOC533/HW5_data_documentation/SWEasfrVH.txt", header=T)
+
+# 2. Subset data files to keep those born 1900-1904 in the life-table data file (http://www.mortality.org/hmd/SWE/STATS/fltcoh_5x5.txt) and the 1900 cohort from the fertility data file (http://www.humanfertility.org/cgi-bin/getfile.plx?f=SWE\20160321\SWEasfrRR.txt)
+mortsub <- subset(mortality, Year=="1900-1904")
+fertsub <- subset(fertility, Year=="1900")
+
+# 3. Generate a Leslie Matrix so that the last three columns of the first row read as NAs, the first two columns of the first row read as zeroes (since no babies are born to females in these age groups, the subdiagonal consists of values calculated according to the equation nLx+n/nLx, and all other cells consist of structural zeroes.
+leslie<-matrix(c(0,(mortsub$Lx[3]/(mortsub$Lx[2]+mortsub$Lx[1])),0,0,0,0,0,(mortsub$Lx[4]/mortsub$Lx[3]),0,0,NA,0,0,(mortsub$Lx[5]/mortsub$Lx[4]),0,NA,0,0,0,(mortsub$Lx[6]/mortsub$Lx[5]),NA,0,0,0,0), nrow=5, ncol=5)
+# Label column and row names
+colnames(leslie) <- c("Ages 0-4","Ages 5-9","Ages 10-14","Ages 15-19","Ages 20-24")
+rownames(leslie) <- c("Ages 0-4","Ages 5-9","Ages 10-14","Ages 15-19","Ages 20-24")
+
+# 4. Calculate 5-year ASFRs by averaging the 1-year ASFRs over the corresponding 5-year periods
+fertsub$ASFR<-as.numeric(fertsub$ASFR)
+asfr_5yr <- c(0,0,(sum(fertsub$ASFR[1:3])/5),(sum(fertsub$ASFR[4:8])/5),(sum(fertsub$ASFR[9:13])/5),sum(fertsub$ASFR[14:18])/5)
+asfr_5yr
+
+# 5. Calculate cells a13, a14, a15 of Leslie Matrix using the following equation: A1,j(x)=(nL0/(2*l0)(nFx+nF(x+n)(nL(x+n)/nLx)ffab
+#First row for 10-14-year-olds, children for 14-year-olds only
+a13 <- (((mortsub$Lx[2]+mortsub$Lx[1])/(2*mortsub$lx[1]))*
+  (asfr_5yr[3]+(asfr_5yr[4]*leslie[4,3]))*0.4886)
+#First row for 15-19-year-olds
+a14 <- (((mortsub$Lx[2]+mortsub$Lx[1])/(2*mortsub$lx[1]))*
+  (asfr_5yr[4]+(asfr_5yr[5]*leslie[5,4]))*0.4886)
+#First row for 20-24-year-olds
+a15 <- (((mortsub$Lx[2]+mortsub$Lx[1])/(2*mortsub$lx[1]))*
+  (asfr_5yr[5]+(asfr_5yr[6]*(mortsub$Lx[7]/mortsub$Lx[6])))*0.4886)
+
+# 6. Add values for cells a13, a14, and 15 to Leslie Matrix.
+leslie[1,3] <- a13
+leslie[1,4] <- a14
+leslie[1,5] <- a15
+
+# Check Leslie Matrix 
+leslie
+
+# 7. Print out Leslie Matrix to .csv file
+write.csv(leslie, file = "SOC533/leslie.csv", quote = TRUE, 
+            eol = "\n", na = "NA",
+            fileEncoding = "")
+```
+
