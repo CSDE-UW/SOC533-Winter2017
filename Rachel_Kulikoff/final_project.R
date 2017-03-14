@@ -1,14 +1,7 @@
 #############################################################
 ## Author: Rachel Kulikoff 
 ## Purpose: Add Shocks to Mortality Envelope and Lifetables
-## Background/Context/Outline: We have a shocks numbers of deaths file and the "envelope file," which gives number of deaths. 
-## This code adds shock deaths to evelope death to generate with-shock envelope.We also have a lifetable file that has 
-## mx (mortality rate), qx (probability of death), ax, px, and other lifetable variables, and we need to add shocks to those. 
-##    1. Generate a scalar = shocks+deaths/deaths. This scalar * mx gives the with-shock mx for adults. 
-##            A.) the lifetables have age-specific groups up to 110 while the envelope only has 95+ so the scalar is not generated for those groups.
-##                   i) use the same country-year specific scalar for each of the specific 95+ groups as for the 95+ aggregate
-##    2. Use equation to get with-shock qx, use lifetable function to get whole lifetable at draw and mean level
-
+## See README.md file for more description 
 ############################################################
 
 ##########################
