@@ -19,11 +19,11 @@ server <- function(input, output) {
   data <- reactive({ 
     if (is.null(input$file)) return(NULL)
     
-    d <- wrap_lc_total(read_table(input$file$datapath, skip = 2, na = "."))
+    wrap_lc_total(read_table(input$file$datapath, skip = 2, na = "."))
   })
   
   output$yearslider <- renderUI({
-    d <- if (is.null(data())) d else data()$d
+    d <- if (is.null(data())) d else data()
     sliderInput(inputId = "Year", 
                 label = h3("A: Year"), 
                 value = median(d$Year), 
@@ -33,7 +33,7 @@ server <- function(input, output) {
   })
   
   output$ageplot <- renderPlot({
-    d <- if (is.null(data())) d else data()$d
+    d <- if (is.null(data())) d else data()
     if (!is.null(input$Year)) {
       plot_nmx_by_age_for_year(d, input$Year)
     } else {
@@ -42,6 +42,7 @@ server <- function(input, output) {
   })
   
   output$agebox <- renderUI({
+    d <- if (is.null(data())) d else data()
     selectInput(inputId = "Age", 
                 label = h3("B: Age group"), 
                 choices = levels(d$Age), 
@@ -49,6 +50,7 @@ server <- function(input, output) {
   })
   
   output$yearplot <- renderPlot({ 
+    d <- if (is.null(data())) d else data()
     if (!is.null(input$Age)) {
       plot_nmx_by_year_for_age(d, input$Age)
     } else {

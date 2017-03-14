@@ -29,7 +29,7 @@ d <-
   combined_df_to_long()
 ```
 
-The first code block takes a nmx data frame and processes and filters the Age variable. The second code block turns the data frame into an nmx matrix, does a singular value decomposition to calculate a~x~, b~x~, and k~t~, turns the model values into a new matrix of estimates, and then converts that *back* into a data frame, so the estimates can be compared with the original values through visualization.
+The first code block takes a nmx data frame and processes and filters the Age variable. The second code block turns the data frame into an nmx matrix, does a singular value decomposition to calculate ax, bx, and kt, turns the model values into a new matrix of estimates, and then converts that *back* into a data frame, so the estimates can be compared with the original values through visualization.
 
 ## Shiny app
 
@@ -37,6 +37,4 @@ The plotting functions use the transformed data above to visualize nMx by age an
 
 To run the app, download the server, UI, and function files into a directory. You will need to create a `data/` subdirectory and add a `Mx_5x1.txt` file to it. Then open the server or UI file in RStudio and click Run App.
 
-## TODO
-
-I am currently attempting to implement a file upload option, which requires learning more about the `reactive()` function for Shiny. You can upload a file, but it will not yet visualize a new plot.
+To visualize a different data set, upload it using the file button. Currently only optimized for Mx 5x1 files from different countries.
