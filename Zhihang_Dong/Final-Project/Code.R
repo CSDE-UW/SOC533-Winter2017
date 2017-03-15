@@ -21,10 +21,14 @@ head(mtable)
 
 mdeaths<-function(yob,mage,dage, rate, alpha,beta){
   if (yob>1923){
-    cat("The years you selected is not available in this country.")
+    cat("The years you selected is not available in this country... Perhaps yuz
+        gonna wait for hundreds of years until this lifetable is published, or
+        just give up on your research career haha")
   }
   else if (mage<10){
-    cat("Don't make fun of me")
+    cat("Don't make fun of me... To say you are a demographer, please have some
+        common sense to realize that modern human beings cannot be pregnant and 
+        successfully get a child born before age 10... Is it too hard?")
   }
   else{
   subset1<-subset(ftable, Year == yob & Age == mage)
@@ -32,7 +36,7 @@ mdeaths<-function(yob,mage,dage, rate, alpha,beta){
   lratio<-(subset2$lx)/(subset1$lx)
   rate<-rate
   rate<-as.numeric(as.character(rate))
-  subset1$lx<-(subset1$lx/100000)
+  subset1$lx<-(subset1$lx/10000)
   g<-function(mage){
     lratio*subset1$mx*subset1$lx*exp(-rate*mage)
   }
