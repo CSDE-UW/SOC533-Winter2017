@@ -53,8 +53,8 @@ I designed the most mean-spirited function I have ever written in my life.
 The function requires you to specify the year you wanna test in (*year* variable, the husband and wife variable is just
 for you to enter the age, *t* is how many years elapsed as specified by you, and *choice* is on whoever side you want to
 test for. "h" is husband, "w" is wife. 
-I don't know how this works for same-sex couples...
 
+# but I don't know how this works for same-sex couples... This is not discrimination on sexual orientation...#
 
 ```r
 partner<-function(year,husband,wife,t,choice)
