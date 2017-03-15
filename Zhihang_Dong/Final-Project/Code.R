@@ -36,7 +36,7 @@ mdeaths<-function(yob,mage,dage, rate, alpha,beta){
   lratio<-(subset2$lx)/(subset1$lx)
   rate<-rate
   rate<-as.numeric(as.character(rate))
-  subset1$lx<-(subset1$lx/10000)
+  subset1$lx<-(subset1$lx/100000)
   g<-function(mage){
     lratio*subset1$mx*subset1$lx*exp(-rate*mage)
   }
