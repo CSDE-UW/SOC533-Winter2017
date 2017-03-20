@@ -37,8 +37,8 @@ This will return something like
 ```r
 "The years you selected is not available in this country..."
 ```
-Of course, this is not esoteric at all but if you think someone can be pregnant before her age of 10, then the system
-will be very mean-spirited to return something like
+If you set the pregnancy of a woman before her age of 10, then the system
+will be return something like
 ```r
 "No one will give birth before her age of 10."
     
