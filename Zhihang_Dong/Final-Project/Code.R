@@ -21,14 +21,10 @@ head(mtable)
 
 mdeaths<-function(yob,mage,dage, rate, alpha,beta){
   if (yob>1923){
-    cat("The years you selected is not available in this country... Perhaps yuz
-        gonna wait for hundreds of years until this lifetable is published, or
-        just give up on your research career haha")
+    cat("The years you selected is not available in this country.")
   }
   else if (mage<10){
-    cat("Don't make fun of me... To say you are a demographer, please have some
-        common sense to realize that modern human beings cannot be pregnant and 
-        successfully get a child born before age 10... Is it too hard?")
+    cat("No one will give birth before her age of 10.")
   }
   else{
   subset1<-subset(ftable, Year == yob & Age == mage)
