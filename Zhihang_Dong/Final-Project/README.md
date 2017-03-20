@@ -28,23 +28,20 @@ The likelihood of your mother is still alive when you aged 18 is 0.4752119 with 
 *Long Live Mama!!*
 
 ## 1.2 Catch Bad Values
-If you don't know the cohort lifetable has year of birth at max 1923 (that's why our project is so unuseful for modern human beings)
+If you don't know the cohort lifetable has year of birth at max 1923，
 , and you try year of birth at **1989**, then... something will happen
 ```r
-mdeaths(yob=1969,mage=19,dage=18,r=0.002, alpha=16, beta= 32)
+mdeaths(yob=1989,mage=19,dage=18,r=0.002, alpha=16, beta= 32)
 ```
 This will return something like
 ```r
-"The years you selected is not available in this country... Perhaps yuz
-        gonna wait for hundreds of years until this lifetable is published, or
-        just give up on your research career haha..."
+"The years you selected is not available in this country..."
 ```
 Of course, this is not esoteric at all but if you think someone can be pregnant before her age of 10, then the system
 will be very mean-spirited to return something like
 ```r
-"Don't make fun of me... To say you are a demographer, please have some
-        common sense to realize that modern human beings cannot be pregnant and 
-        successfully get a child born before age 10... Is it too hard?"
+"No one will give birth before her age of 10."
+    
 ```
 I designed the most mean-spirited function I have ever written in my life.
 
